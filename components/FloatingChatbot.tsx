@@ -226,6 +226,7 @@ const FloatingChatbot: React.FC = () => {
                 border: '1px solid #ddd',
                 outline: 'none',
                 fontSize: 16,
+                color:'black'
               }}
               disabled={loading}
               autoFocus
