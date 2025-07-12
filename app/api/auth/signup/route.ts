@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import clientPromise from "@/lib/mongo";
 
 export async function POST(req: NextRequest) {
@@ -15,18 +15,23 @@ export async function POST(req: NextRequest) {
     const existingUser = await usersCol.findOne({ email });
 
     if (existingUser) {
-      return NextResponse.json({ message: "User already exists" }, { status: 400 });
+      return NextResponse.json(
+        { message: "User already exists" },
+        { status: 400 }
+      );
     }
 
     const user = {
       name,
-      email,
+      email, // Make sure email is included
       password,
       createdAt: new Date(),
       isPublic: true,
+      isBan: false, // Add isBan field with default false
       skillsOffered: [],
       skillsWanted: [],
       availability: [],
+      role: "user", // Always set to user for new signups
     };
 
     await usersCol.insertOne(user);
@@ -34,6 +39,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: "User created" }, { status: 200 });
   } catch (err) {
     console.error("Signup error:", err);
-    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

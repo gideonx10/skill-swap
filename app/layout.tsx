@@ -1,5 +1,7 @@
+import type React from "react";
 import "./globals.css";
-import { Providers } from "@/components/Providers";
+import { Providers } from "@/components/Providers"; // adjust path if needed
+import BanChecker from "@/components/BanChecker";
 import FloatingChatbot from "@/components/FloatingChatbot";
 
 export const metadata = {
@@ -7,10 +9,17 @@ export const metadata = {
   description: "Trade your skills",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body>
+        <Providers>
+          <BanChecker>{children}</BanChecker>
+        </Providers>
         <Providers>{children}</Providers>
         <FloatingChatbot />
       </body>
