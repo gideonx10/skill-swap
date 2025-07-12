@@ -1,17 +1,17 @@
 // app/layout.tsx
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
+import { Providers } from "@/components/Providers"; // adjust path if needed
 
 export const metadata = {
-  title: "Skill Swap",
-  description: "Swap your skills with others easily",
+  title: "SkillSwap",
+  description: "Trade your skills",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <SessionProvider>{children}</SessionProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

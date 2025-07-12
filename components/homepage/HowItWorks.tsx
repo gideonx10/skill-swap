@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import { User, Search, MessageCircle, Star, ArrowRight, CheckCircle } from 'lucide-react';
 
