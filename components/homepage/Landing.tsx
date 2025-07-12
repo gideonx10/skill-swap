@@ -1,8 +1,14 @@
+"use client"
 import React from 'react';
 import { ArrowRight, Users, Zap, Star, Play } from 'lucide-react';
+import HowItWorks from './HowItWorks';
+import UseCases from './UseCases';
+import Testimonials from './Testimonals';
+import Footer from './Footer';
 
 const Landing: React.FC = () => {
   return (
+    <>
     <div className="h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 text-gray-900 overflow-hidden">
       {/* Dynamic Background Elements */}
       <div className="absolute inset-0">
@@ -152,6 +158,8 @@ const Landing: React.FC = () => {
         </div>
       </div>
     </div>
+    
+    </>
   );
 };
 
