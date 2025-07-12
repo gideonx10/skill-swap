@@ -1,7 +1,9 @@
 import type React from "react";
 import "./globals.css";
-import { Providers } from "@/components/Providers"; // adjust path if needed
+import { Providers } from "@/components/Providers";
 import BanChecker from "@/components/BanChecker";
+import MaintenanceChecker from "@/components/MaintenanceChecker";
+import NotificationPopup from "@/components/NotificationPopup";
 import FloatingChatbot from "@/components/FloatingChatbot";
 
 export const metadata = {
@@ -18,7 +20,12 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          <BanChecker>{children}</BanChecker>
+          <MaintenanceChecker>
+            <BanChecker>
+              {children}
+              <NotificationPopup />
+            </BanChecker>
+          </MaintenanceChecker>
         </Providers>
         
       </body>
