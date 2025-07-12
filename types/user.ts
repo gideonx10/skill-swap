@@ -8,7 +8,7 @@ export interface User {
   skillsWanted: string[];
   availability: string[];
   isPublic: boolean;
-  isBan: boolean; // Add isBan field
+  isBan: boolean;
   role: "user" | "admin";
   createdAt?: string;
 }
