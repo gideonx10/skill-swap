@@ -1,6 +1,7 @@
 "use client"
 import React from 'react';
 import { ArrowRight, Users, Zap, Star, Play } from 'lucide-react';
+import LandingNavbar from './Navbar';
 
 const Landing: React.FC = () => {
   return (
@@ -24,40 +25,8 @@ const Landing: React.FC = () => {
           ></div>
         </div>
 
-        {/* Navigation */}
-        <nav className="relative z-10 flex justify-between items-center px-8 py-6">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <div className="w-6 h-6 bg-white rounded-lg"></div>
-            </div>
-            <span className="text-2xl font-black tracking-tighter bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent font-display">
-              SKILLSWAP
-            </span>
-          </div>
-          <div className="flex items-center space-x-8">
-            <a
-              href="#"
-              className="text-gray-700 hover:text-indigo-600 transition-colors font-semibold font-display"
-            >
-              Features
-            </a>
-            <a
-              href="#"
-              className="text-gray-700 hover:text-indigo-600 transition-colors font-semibold font-display"
-            >
-              Pricing
-            </a>
-            <a
-              href="#"
-              className="text-gray-700 hover:text-indigo-600 transition-colors font-semibold font-display"
-            >
-              About
-            </a>
-            <button className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-xl font-bold hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 shadow-lg font-display">
-              Sign In
-            </button>
-          </div>
-        </nav>
+        {/* Navbar */}
+        <LandingNavbar />
 
         {/* Main Content Grid */}
         <div className="relative z-10 grid grid-cols-12 h-full px-8 -mt-20">
@@ -65,9 +34,9 @@ const Landing: React.FC = () => {
           <div className="col-span-12 lg:col-span-7 flex flex-col justify-center space-y-8">
             <div className="space-y-6">
               {/* Badge */}
-              <div className="inline-flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg border border-indigo-100">
+              <div className="mt-8 inline-flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg border border-indigo-100">
                 <Zap className="w-4 h-4 text-indigo-600 mr-2" />
-                <span className="text-sm font-bold text-indigo-800 font-display">
+                <span className=" text-sm font-bold text-indigo-800 font-display">
                   Next-Gen Skill Exchange
                 </span>
               </div>
