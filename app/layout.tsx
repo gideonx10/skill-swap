@@ -27,7 +27,6 @@ export default function RootLayout({
             </BanChecker>
           </MaintenanceChecker>
         </Providers>
-        <Providers>{children}</Providers>
         <FloatingChatbot />
       </body>
     </html>
