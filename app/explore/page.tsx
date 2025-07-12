@@ -11,14 +11,36 @@ interface User {
   photo?: string;
 }
 
+interface SwapRequest {
+  fromUserId: string;
+  toUserId: string;
+  status: string;
+}
+
 export default function ExplorePage() {
   const [users, setUsers] = useState<User[]>([]);
   const [query, setQuery] = useState("");
+  const [sentRequests, setSentRequests] = useState<string[]>([]); // Store already requested user IDs
 
+  const currentUserId = "123456789"; // 🔁 TEMP ID — Replace with actual user ID after auth
+
+  // Fetch all public users
   useEffect(() => {
     fetch("/api/users")
       .then(res => res.json())
-      .then(data => setUsers(data.filter((u: any) => u.isPublic)));
+      .then(data => setUsers(data.filter((u: any) => u.isPublic && u._id !== currentUserId)));
+  }, []);
+
+  // Fetch sent requests to disable already requested buttons
+  useEffect(() => {
+    fetch(`/api/requests?userId=${currentUserId}`)
+      .then(res => res.json())
+      .then((data: SwapRequest[]) => {
+        const alreadySent = data
+          .filter((r) => r.fromUserId === currentUserId)
+          .map((r) => r.toUserId);
+        setSentRequests(alreadySent);
+      });
   }, []);
 
   const filteredUsers = users.filter((user) =>
@@ -27,6 +49,20 @@ export default function ExplorePage() {
       .toLowerCase()
       .includes(query.toLowerCase())
   );
+
+  const handleRequestSwap = async (toUserId: string) => {
+    const res = await fetch("/api/requests", {
+      method: "POST",
+      body: JSON.stringify({
+        fromUserId: currentUserId,
+        toUserId,
+      }),
+    });
+
+    const data = await res.json();
+    alert(data.message);
+    setSentRequests((prev) => [...prev, toUserId]); // Disable after request
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -71,6 +107,18 @@ export default function ExplorePage() {
                 <p className="text-sm font-medium">Availability:</p>
                 <p className="text-gray-700 text-sm">{user.availability.join(", ")}</p>
               </div>
+
+              <button
+                onClick={() => handleRequestSwap(user._id)}
+                className={`mt-4 px-3 py-1 rounded ${
+                  sentRequests.includes(user._id)
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-indigo-600 text-white"
+                }`}
+                disabled={sentRequests.includes(user._id)}
+              >
+                {sentRequests.includes(user._id) ? "Swap Requested" : "Request Swap"}
+              </button>
             </div>
           ))}
         </div>
