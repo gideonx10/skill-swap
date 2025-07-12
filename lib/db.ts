@@ -1,3 +1,4 @@
+// lib/db.ts
 import clientPromise from "./mongo";
 import { User } from "@/types/user";
 import { SwapRequest } from "@/types/request";
@@ -17,4 +18,3 @@ export async function getFeedbackCollection() {
   const client = await clientPromise;
   return client.db("skill_swap").collection<Feedback>("feedback");
 }
-
