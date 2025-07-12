@@ -13,15 +13,24 @@ export default function SignupPage() {
 
     const res = await fetch("/api/auth/signup", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json", // ✅ Important
+      },
       body: JSON.stringify({ email, password, name }),
     });
 
-    if (res.ok) {
-      alert("Signup successful! You can now log in.");
-      router.push("/login");
-    } else {
+    try {
       const data = await res.json();
-      alert(`Signup failed: ${data.message}`);
+
+      if (res.ok) {
+        alert("Signup successful! You can now log in.");
+        router.push("/login");
+      } else {
+        alert(`Signup failed: ${data.message}`);
+      }
+    } catch (error) {
+      alert("Unexpected error occurred.");
+      console.error("Signup error:", error);
     }
   };
 

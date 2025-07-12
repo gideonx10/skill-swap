@@ -1,10 +1,6 @@
-"use client";
-import React from "react";
-import { ArrowRight, Users, Zap, Star, Play } from "lucide-react";
-import HowItWorks from "./HowItWorks";
-import UseCases from "./UseCases";
-import Testimonials from "./Testimonals";
-import Footer from "./Footer";
+"use client"
+import React from 'react';
+import { ArrowRight, Users, Zap, Star, Play } from 'lucide-react';
 
 const Landing: React.FC = () => {
   return (
