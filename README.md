@@ -35,10 +35,10 @@ The Skill Swap Platform is a mini web application that enables users to list the
 
 | Name             | Email                         |
 |------------------|-------------------------------|
-| Aditya Panchal      | [panchaladi1010@gmail.com]  |
-| Nirmeet Parmar      | [nirmeetparmar21@gmail.com] |
-| Sneh Karanjia       | [snehkaranjia@gmail.com]    |
-| Harsh Parmar        | [u23cs056@coed.svnit.ac.in] |
+| Aditya Panchal      | panchaladi1010@gmail.com  |
+| Nirmeet Parmar      | nirmeetparmar21@gmail.com |
+| Sneh Karanjia       | snehkaranjia@gmail.com    |
+| Harsh Parmar        | u23cs056@coed.svnit.ac.in |
 
 ---
 
