@@ -3,6 +3,19 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { authAdapter } from "@/lib/mongoAdapter";
 import clientPromise from "@/lib/mongo";
 
+// Extend NextAuth types to include 'role'
+declare module "next-auth" {
+  interface User {
+    role?: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    role?: string;
+  }
+}
+
 const handler = NextAuth({
   adapter: authAdapter,
   session: {
@@ -28,10 +41,19 @@ const handler = NextAuth({
           throw new Error("Invalid password");
         }
 
+        // Ensure role is set to 'user' if not already set
+        if (!user.role) {
+          await usersCol.updateOne(
+            { _id: user._id },
+            { $set: { role: "user" } }
+          );
+        }
+
         return {
           id: user._id.toString(),
           name: user.name,
           email: user.email,
+          role: user.role || "user",
         };
       },
     }),
@@ -43,6 +65,12 @@ const handler = NextAuth({
     async session({ session, token }) {
       session.user.id = token.sub ?? "";
       return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
     },
   },
 });

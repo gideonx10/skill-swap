@@ -12,6 +12,7 @@ interface User {
   availability: string[];
   location?: string;
   photo?: string;
+  isBan?: boolean; // Add isBan field
 }
 
 interface SwapRequest {
@@ -26,6 +27,7 @@ const ExplorePage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [query, setQuery] = useState("");
   const [sentRequests, setSentRequests] = useState<string[]>([]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const currentUserId = session?.user?.id;
 
@@ -35,12 +37,36 @@ const ExplorePage: React.FC = () => {
     }
   }, [status, router]);
 
+  // Check if current user is banned
   useEffect(() => {
-    if (!currentUserId) return;
+    if (session?.user?.email) {
+      fetch("/api/users")
+        .then((res) => res.json())
+        .then((data) => {
+          const user = data.find((u: any) => u.email === session.user?.email);
+          if (user?.isBan) {
+            alert("Your account has been banned. Please contact support.");
+            router.push("/");
+            return;
+          }
+          setCurrentUser(user);
+        });
+    }
+  }, [session, router]);
+
+  // Fetch all users
+  useEffect(() => {
+    if (!currentUserId || !currentUser) return;
     fetch("/api/users")
       .then((res) => res.json())
-      .then((data) => setUsers(data.filter((u: any) => u.isPublic && u._id !== currentUserId)));
-  }, [currentUserId]);
+      .then((data) =>
+        setUsers(
+          data.filter(
+            (u: any) => u.isPublic && u._id !== currentUserId && !u.isBan // Filter out banned users
+          )
+        )
+      );
+  }, [currentUserId, currentUser]);
 
   useEffect(() => {
     if (!currentUserId) return;
