@@ -4,6 +4,7 @@ import { Providers } from "@/components/Providers";
 import BanChecker from "@/components/BanChecker";
 import MaintenanceChecker from "@/components/MaintenanceChecker";
 import NotificationPopup from "@/components/NotificationPopup";
+import FloatingChatbot from "@/components/FloatingChatbot";
 
 export const metadata = {
   title: "SkillSwap",
@@ -26,6 +27,8 @@ export default function RootLayout({
             </BanChecker>
           </MaintenanceChecker>
         </Providers>
+        <Providers>{children}</Providers>
+        <FloatingChatbot />
       </body>
     </html>
   );
