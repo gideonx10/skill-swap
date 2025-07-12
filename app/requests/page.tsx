@@ -1,5 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
+// Extend the session user type to include 'id'
+declare module "next-auth" {
+  interface User {
+    id: string;
+  }
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+  }
+}
 
 interface SwapRequest {
   _id: string;
@@ -10,14 +27,24 @@ interface SwapRequest {
 }
 
 export default function RequestsPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [requests, setRequests] = useState<SwapRequest[]>([]);
-  const currentUserId = "USER_ID_HERE"; // Replace with real user ID
+
+  const currentUserId = session?.user?.id;
 
   useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  useEffect(() => {
+    if (!currentUserId) return;
     fetch(`/api/requests?userId=${currentUserId}`)
       .then((res) => res.json())
       .then((data) => setRequests(data));
-  }, []);
+  }, [currentUserId]);
 
   const handleAction = async (id: string, action: string) => {
     await fetch("/api/requests", {
@@ -34,6 +61,8 @@ export default function RequestsPage() {
     });
     location.reload();
   };
+
+  if (status === "loading") return <p>Loading session...</p>;
 
   return (
     <div className="max-w-3xl mx-auto mt-8">
