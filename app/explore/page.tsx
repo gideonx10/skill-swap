@@ -1,0 +1,80 @@
+"use client";
+import { useEffect, useState } from "react";
+
+interface User {
+  _id: string;
+  name: string;
+  skillsOffered: string[];
+  skillsWanted: string[];
+  availability: string[];
+  location?: string;
+  photo?: string;
+}
+
+export default function ExplorePage() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    fetch("/api/users")
+      .then(res => res.json())
+      .then(data => setUsers(data.filter((u: any) => u.isPublic)));
+  }, []);
+
+  const filteredUsers = users.filter((user) =>
+    [...user.skillsOffered, ...user.skillsWanted]
+      .join(",")
+      .toLowerCase()
+      .includes(query.toLowerCase())
+  );
+
+  return (
+    <div className="max-w-4xl mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-4">Explore Skill Swappers</h1>
+
+      <input
+        type="text"
+        placeholder="Search by skill (e.g. React, Excel)"
+        className="w-full p-2 border rounded mb-4"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+
+      {filteredUsers.length === 0 ? (
+        <p>No users found.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {filteredUsers.map((user) => (
+            <div key={user._id} className="p-4 border rounded shadow">
+              <h2 className="text-xl font-semibold">{user.name}</h2>
+              {user.location && <p className="text-sm text-gray-600">{user.location}</p>}
+
+              <div className="mt-2">
+                <p className="text-sm font-medium">Offers:</p>
+                <ul className="flex flex-wrap gap-1 text-sm">
+                  {user.skillsOffered.map((skill, idx) => (
+                    <li key={idx} className="bg-green-100 px-2 py-1 rounded">{skill}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-2">
+                <p className="text-sm font-medium">Wants:</p>
+                <ul className="flex flex-wrap gap-1 text-sm">
+                  {user.skillsWanted.map((skill, idx) => (
+                    <li key={idx} className="bg-yellow-100 px-2 py-1 rounded">{skill}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-2">
+                <p className="text-sm font-medium">Availability:</p>
+                <p className="text-gray-700 text-sm">{user.availability.join(", ")}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
