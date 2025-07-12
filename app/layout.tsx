@@ -1,6 +1,6 @@
-// app/layout.tsx
 import "./globals.css";
-import { Providers } from "@/components/Providers"; // adjust path if needed
+import { Providers } from "@/components/Providers";
+import FloatingChatbot from "@/components/FloatingChatbot";
 
 export const metadata = {
   title: "SkillSwap",
@@ -12,6 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <Providers>{children}</Providers>
+        <FloatingChatbot />
       </body>
     </html>
   );
