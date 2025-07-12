@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface User {
   _id: string;
@@ -18,30 +20,43 @@ interface SwapRequest {
 }
 
 export default function ExplorePage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
   const [query, setQuery] = useState("");
-  const [sentRequests, setSentRequests] = useState<string[]>([]); // Store already requested user IDs
+  const [sentRequests, setSentRequests] = useState<string[]>([]);
 
-  const currentUserId = "123456789"; // 🔁 TEMP ID — Replace with actual user ID after auth
+  const currentUserId = session?.user?.id;
 
-  // Fetch all public users
+  // Redirect if not authenticated
   useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  // Fetch all users
+  useEffect(() => {
+    if (!currentUserId) return;
     fetch("/api/users")
-      .then(res => res.json())
-      .then(data => setUsers(data.filter((u: any) => u.isPublic && u._id !== currentUserId)));
-  }, []);
+      .then((res) => res.json())
+      .then((data) =>
+        setUsers(data.filter((u: any) => u.isPublic && u._id !== currentUserId))
+      );
+  }, [currentUserId]);
 
-  // Fetch sent requests to disable already requested buttons
+  // Fetch requests sent
   useEffect(() => {
+    if (!currentUserId) return;
     fetch(`/api/requests?userId=${currentUserId}`)
-      .then(res => res.json())
+      .then((res) => res.json())
       .then((data: SwapRequest[]) => {
         const alreadySent = data
           .filter((r) => r.fromUserId === currentUserId)
           .map((r) => r.toUserId);
         setSentRequests(alreadySent);
       });
-  }, []);
+  }, [currentUserId]);
 
   const filteredUsers = users.filter((user) =>
     [...user.skillsOffered, ...user.skillsWanted]
@@ -61,8 +76,10 @@ export default function ExplorePage() {
 
     const data = await res.json();
     alert(data.message);
-    setSentRequests((prev) => [...prev, toUserId]); // Disable after request
+    setSentRequests((prev) => [...prev, toUserId]);
   };
+
+  if (status === "loading") return <p>Loading session...</p>;
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -83,13 +100,17 @@ export default function ExplorePage() {
           {filteredUsers.map((user) => (
             <div key={user._id} className="p-4 border rounded shadow">
               <h2 className="text-xl font-semibold">{user.name}</h2>
-              {user.location && <p className="text-sm text-gray-600">{user.location}</p>}
+              {user.location && (
+                <p className="text-sm text-gray-600">{user.location}</p>
+              )}
 
               <div className="mt-2">
                 <p className="text-sm font-medium">Offers:</p>
                 <ul className="flex flex-wrap gap-1 text-sm">
                   {user.skillsOffered.map((skill, idx) => (
-                    <li key={idx} className="bg-green-100 px-2 py-1 rounded">{skill}</li>
+                    <li key={idx} className="bg-green-100 px-2 py-1 rounded">
+                      {skill}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -98,14 +119,18 @@ export default function ExplorePage() {
                 <p className="text-sm font-medium">Wants:</p>
                 <ul className="flex flex-wrap gap-1 text-sm">
                   {user.skillsWanted.map((skill, idx) => (
-                    <li key={idx} className="bg-yellow-100 px-2 py-1 rounded">{skill}</li>
+                    <li key={idx} className="bg-yellow-100 px-2 py-1 rounded">
+                      {skill}
+                    </li>
                   ))}
                 </ul>
               </div>
 
               <div className="mt-2">
                 <p className="text-sm font-medium">Availability:</p>
-                <p className="text-gray-700 text-sm">{user.availability.join(", ")}</p>
+                <p className="text-gray-700 text-sm">
+                  {user.availability.join(", ")}
+                </p>
               </div>
 
               <button
@@ -117,7 +142,9 @@ export default function ExplorePage() {
                 }`}
                 disabled={sentRequests.includes(user._id)}
               >
-                {sentRequests.includes(user._id) ? "Swap Requested" : "Request Swap"}
+                {sentRequests.includes(user._id)
+                  ? "Swap Requested"
+                  : "Request Swap"}
               </button>
             </div>
           ))}

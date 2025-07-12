@@ -9,9 +9,9 @@ export default function HomePage() {
     <>
       <Landing/>
       <HowItWorks />
-    <UseCases />
-    <Testimonials />
-    <Footer />
+      <UseCases />
+      <Testimonials />
+      <Footer />
       </>
       );
 }
