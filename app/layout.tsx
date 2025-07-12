@@ -20,8 +20,7 @@ export default function RootLayout({
         <Providers>
           <BanChecker>{children}</BanChecker>
         </Providers>
-        <Providers>{children}</Providers>
-        <FloatingChatbot />
+        
       </body>
     </html>
   );
