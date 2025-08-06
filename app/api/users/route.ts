@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const usersCol = await getUsersCollection();
     const body = await req.json();
 
-    const existing = await usersCol.findOne({ name: body.name });
+const existing = await usersCol.findOne({ email: body.email });
 
     if (existing) {
       await usersCol.updateOne({ name: body.name }, { $set: body });

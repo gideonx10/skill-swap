@@ -34,7 +34,7 @@ export default function LoginPage() {
         if (banData.banned) {
           router.push("/banned");
         } else {
-          router.push("/");
+          router.push("/dashboard");
         }
       } else {
         setError("Invalid email or password. Please try again.");
