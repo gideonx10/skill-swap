@@ -47,13 +47,11 @@ export default function NotificationPopup() {
       });
 
       if (res.ok) {
-        // Remove from current notifications
         const remainingNotifications = notifications.filter(
           (n) => n.id !== notificationId
         );
         setNotifications(remainingNotifications);
 
-        // Show next notification or hide popup
         if (remainingNotifications.length > 0) {
           setCurrentNotification(remainingNotifications[0]);
         } else {

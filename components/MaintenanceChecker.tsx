@@ -19,7 +19,6 @@ export default function MaintenanceChecker({
   const [loading, setLoading] = useState(true);
   const [checkComplete, setCheckComplete] = useState(false);
 
-  // Pages that are allowed during maintenance (very restrictive)
   const allowedPagesForMaintenance = ["/maintenance", "/login", "/signup"];
   const isAllowedPage = allowedPagesForMaintenance.some((page) =>
     pathname.startsWith(page)
@@ -28,12 +27,10 @@ export default function MaintenanceChecker({
   useEffect(() => {
     const checkMaintenanceAndAdmin = async () => {
       try {
-        // Always check maintenance mode first
         const maintenanceRes = await fetch("/api/settings/maintenance");
         const maintenanceData = await maintenanceRes.json();
         setMaintenanceMode(maintenanceData);
 
-        // Check if user is admin (only if logged in)
         if (session?.user?.email) {
           try {
             const adminRes = await fetch("/api/admin/users");
@@ -59,23 +56,18 @@ export default function MaintenanceChecker({
       }
     };
 
-    // Only run check when session is loaded
     if (status !== "loading") {
       checkMaintenanceAndAdmin();
     }
   }, [session, status]);
 
   useEffect(() => {
-    // Only redirect after all checks are complete
     if (!loading && checkComplete && status !== "loading") {
-      // If maintenance mode is enabled
       if (maintenanceMode?.enabled) {
-        // If user is not admin and not on an allowed page, redirect to maintenance
         if (!isAdmin && !isAllowedPage) {
           router.push("/maintenance");
           return;
         }
-        // If user is admin and on maintenance page, redirect to admin dashboard
         if (isAdmin && pathname === "/maintenance") {
           router.push("/admin");
           return;
@@ -93,7 +85,6 @@ export default function MaintenanceChecker({
     checkComplete,
   ]);
 
-  // Show loading while checking
   if (loading || status === "loading" || !checkComplete) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -105,7 +96,6 @@ export default function MaintenanceChecker({
     );
   }
 
-  // If maintenance is enabled and user is not admin and not on allowed page, show maintenance
   if (maintenanceMode?.enabled && !isAdmin && !isAllowedPage) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
