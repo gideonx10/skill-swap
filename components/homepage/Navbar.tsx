@@ -46,7 +46,7 @@ export default function LandingNavbar() {
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           {user ? (
             <>
-              <Link href="/profile" style={{ display: "flex", alignItems: "center" }}>
+              <Link href="/dashboard" style={{ display: "flex", alignItems: "center" }}>
                 <img
                   src={
                     user.image ||

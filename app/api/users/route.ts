@@ -8,7 +8,7 @@ export async function GET() {
     const users = await usersCol.find().toArray();
     return NextResponse.json(users);
   } catch {
-    return new NextResponse("Failed to fetch users", { status: 500 });
+    return NextResponse.json({ message: "Failed to fetch users" }, { status: 500 });
   }
 }
 
@@ -17,10 +17,10 @@ export async function POST(req: NextRequest) {
     const usersCol = await getUsersCollection();
     const body = await req.json();
 
-const existing = await usersCol.findOne({ email: body.email });
+    const existing = await usersCol.findOne({ email: body.email });
 
     if (existing) {
-      await usersCol.updateOne({ name: body.name }, { $set: body });
+      await usersCol.updateOne({ email: body.email }, { $set: body });
       return NextResponse.json({ message: "User updated", updated: true });
     }
 
@@ -28,6 +28,6 @@ const existing = await usersCol.findOne({ email: body.email });
     return NextResponse.json({ message: "User created", created: true });
   } catch (error) {
     console.error(error);
-    return new NextResponse("Failed to save user", { status: 500 });
+    return NextResponse.json({ message: "Failed to save user" }, { status: 500 });
   }
 }
